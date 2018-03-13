@@ -1,10 +1,10 @@
 # K Means Clustering using Hadoop Mapreduce
 
-Implementation Details: 
+## Implementation Details: 
 
 Initially we stored k centroids in a text file called “centroid.txt”. We wrote 3 python scripts to run our hadoop implementation :-
 
-Mapper.py - Mapper takes in the input data line by line and for each row it emits centroid id, the point which belong to this centroid and the point attributes.
+1) Mapper.py - Mapper takes in the input data line by line and for each row it emits centroid id, the point which belong to this centroid and the point attributes.
 
 		Mapper -> emits(centroid_id, gen_id, attributes 1 ...2….3..)
 
@@ -14,6 +14,7 @@ Mapper.py - Mapper takes in the input data line by line and for each row it emit
 
 3) bash.py - This is a driver file which runs hadoop mapreduce multiple times until we reach a convergence. This convergence is found when the text file centroid.txt does not change in any iteration. We stop our program and then write the final results into a text file called “part-00000”.
 
+## Steps to run the program
 
 1) Start hadoop
 ```
