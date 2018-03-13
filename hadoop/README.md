@@ -1,17 +1,19 @@
-# Parallel-text-processing-using-MapReduce-MR-and-Hadoop-Distributed-File-System-HDFS
+# K Means Clustering using Hadoop Mapreduce
 
-This problem was provided by researchers in the Classics department at UB. They have provided
-two classical texts and a lemmatization file to convert words from one form to a standard or
-normal form. In this case several passes through the documents were done. 
+Implementation Details: 
 
+Initially we stored k centroids in a text file called “centroid.txt”. We wrote 3 python scripts to run our hadoop implementation :-
 
-Pass 1: Lemmetization using the lemmas.csv file
+Mapper.py - Mapper takes in the input data line by line and for each row it emits centroid id, the point which belong to this centroid and the point attributes.
 
+		Mapper -> emits(centroid_id, gen_id, attributes 1 ...2….3..)
 
-Pass 2: Identify the words in the texts by <word <docid, [chapter#, line#]> for two documents>.
+2) Reducer.py - Reducer gets the sorted data from the mapper. It goes through each line and sum the attributes of each line which belongs to same centroid. After that, when it parses all rows of a centroid it emits the centroid_id and the list of all gen_ids which belong to this cluster. Reducer also updates the centroid.txt file with the mean of data. This updated text file is now used by the mapper to process second iteration.
 
+		Reducer -> emits(centroid_id, list of gen_ids)
 
-Pass 3: Repeat this for multiple documents.
+3) bash.py - This is a driver file which runs hadoop mapreduce multiple times until we reach a convergence. This convergence is found when the text file centroid.txt does not change in any iteration. We stop our program and then write the final results into a text file called “part-00000”.
+
 
 1) Start hadoop
 ```
@@ -19,8 +21,8 @@ Pass 3: Repeat this for multiple documents.
 ```
 2) Run chmod
 ```
-chmod +x ./mapper3.py
-chmod +x ./reducer3.py
+chmod +x ./kmeansmap.py
+chmod +x ./kmeansred.py
 ```
 2) Put the input files to the hadoop directory :-
 ```
@@ -28,7 +30,7 @@ hdfs dfs -put $HOME/Activity3/act3input act3input
 ```
 3) Run hadoop mapreduce:
 ```
-hadoop jar $HADOOP_HOME/share/hadoop/tools/lib/hadoop-streaming-2.6.4.jar -mapper $HOME/Activity3/mapper3.py -reducer $HOME/Activity3/reducer3.py -input act3input -output act3out
+python2.7 bash.py
 ```
 4) Read output:
 ```
